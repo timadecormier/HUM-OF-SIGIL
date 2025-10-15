@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prismatic Spear</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0f0f1e 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 40px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            letter-spacing: 3px;
+            font-weight: 300;
+        }
+
+        .spear-container {
+            position: relative;
+            width: 500px;
+            height: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .spear {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Particle effects */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: currentColor;
+            border-radius: 50%;
+            animation: float 3s infinite;
+            opacity: 0;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-200px) scale(1.5); opacity: 0; }
+        }
+
+        /* Enhanced staff */
+        .staff {
+            width: 24px;
+            height: 380px;
+            background: 
+                linear-gradient(90deg, 
+                    rgba(0,0,0,0.3) 0%,
+                    transparent 20%,
+                    transparent 80%,
+                    rgba(0,0,0,0.3) 100%
+                ),
+                linear-gradient(to bottom, 
+                    #3d2817 0%, 
+                    #5c4033 15%,
+                    #6b4e3d 30%,
+                    #5c4033 50%,
+                    #6b4e3d 70%,
+                    #5c4033 85%,
+                    #3d2817 100%
+                );
+            margin: 0 auto;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 
+                inset 0 0 20px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(0, 0, 0, 0.7),
+                0 5px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .staff::before {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 100%;
+            left: 3px;
+            background: linear-gradient(to bottom, 
+                transparent,
+                rgba(255, 255, 255, 0.3) 20%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0.3) 80%,
+                transparent
+            );
+            border-radius: 10px;
+        }
+
+        .staff::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent,
+                transparent 40px,
+                rgba(0, 0, 0, 0.2) 40px,
+                rgba(0, 0, 0, 0.2) 42px
+            );
+            border-radius: 12px;
+        }
+
+        .grip {
+            position: absolute;
+            width: 36px;
+            height: 100px;
+            background: 
+                linear-gradient(90deg,
+                    rgba(0,0,0,0.4) 0%,
+                    transparent 10%,
+                    transparent 90%,
+                    rgba(0,0,0,0.4) 100%
+                ),
+                repeating-linear-gradient(
+                    to bottom,
+                    #1a0f0a 0px,
+                    #2c1810 3px,
+                    #1a0f0a 6px
+                );
+            left: 50%;
+            top: 60%;
+            transform: translateX(-50%);
+            border-radius: 8px;
+            box-shadow: 
+                inset 0 0 10px rgba(0, 0, 0, 0.7),
+                0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Crystal spear head */
+        .spear-head {
+            position: absolute;
+            top: -120px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            filter: drop-shadow(0 0 30px currentColor) drop-shadow(0 0 60px currentColor);
+            transition: all 0.6s ease;
+        }
+
+        .crystal-main {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 40px solid transparent;
+            border-right: 40px solid transparent;
+            border-bottom: 130px solid currentColor;
+            left: -40px;
+            opacity: 0.9;
+        }
+
+        .crystal-inner {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 100px solid rgba(255, 255, 255, 0.4);
+            left: -30px;
+            top: 15px;
+            animation: shimmer 2s infinite;
+        }
+
+        .crystal-highlight {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 80px solid rgba(255, 255, 255, 0.8);
+            left: -18px;
+            top: 20px;
+            filter: blur(2px);
+        }
+
+        .crystal-edge-left {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-right: 15px solid currentColor;
+            border-top: 60px solid transparent;
+            border-bottom: 60px solid transparent;
+            left: -45px;
+            top: 10px;
+            opacity: 0.6;
+        }
+
+        .crystal-edge-right {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 15px solid currentColor;
+            border-top: 60px solid transparent;
+            border-bottom: 60px solid transparent;
+            right: -45px;
+            top: 10px;
+            opacity: 0.6;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Enhanced glow effects */
+        .glow-outer {
+            position: absolute;
+            top: -120px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, currentColor 0%, transparent 70%);
+            filter: blur(40px);
+            opacity: 0.4;
+            transition: all 0.6s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .glow-inner {
+            position: absolute;
+            top: -120px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, currentColor 0%, transparent 70%);
+            filter: blur(20px);
+            opacity: 0.6;
+            transition: all 0.6s ease;
+            animation: pulse 2s 0.3s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 0.3; 
+                transform: translateX(-50%) scale(1); 
+            }
+            50% { 
+                opacity: 0.7; 
+                transform: translateX(-50%) scale(1.3); 
+            }
+        }
+
+        /* Runes */
+        .runes {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            letter-spacing: 8px;
+            opacity: 0.5;
+            color: currentColor;
+            animation: runeGlow 3s infinite;
+        }
+
+        @keyframes runeGlow {
+            0%, 100% { opacity: 0.3; text-shadow: 0 0 5px currentColor; }
+            50% { opacity: 0.8; text-shadow: 0 0 15px currentColor; }
+        }
+
+        .type-selector {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            max-width: 700px;
+        }
+
+        .type-btn {
+            padding: 14px 26px;
+            border: 3px solid;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .type-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.2;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .type-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .type-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px currentColor;
+            border-width: 3px;
+        }
+
+        .type-btn.active {
+            background: currentColor;
+            color: #0f0f1e;
+            box-shadow: 0 0 30px currentColor;
+        }
+
+        .type-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .type-btn.fire { border-color: #ff4500; color: #ff4500; }
+        .type-btn.cold { border-color: #00bfff; color: #00bfff; }
+        .type-btn.lightning { border-color: #ffd700; color: #ffd700; }
+        .type-btn.thunder { border-color: #4169e1; color: #4169e1; }
+        .type-btn.acid { border-color: #32cd32; color: #32cd32; }
+        .type-btn.poison { border-color: #9370db; color: #9370db; }
+        .type-btn.radiant { border-color: #fffacd; color: #fffacd; }
+        .type-btn.necrotic { border-color: #708090; color: #708090; }
+        .type-btn.force { border-color: #da70d6; color: #da70d6; }
+        .type-btn.psychic { border-color: #ff1493; color: #ff1493; }
+
+        .damage-display {
+            margin-top: 30px;
+            font-size: 1.5em;
+            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            border: 3px solid;
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
+            font-weight: 300;
+            box-shadow: 0 0 30px currentColor;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚔️ PRISMATIC SPEAR ⚔️</h1>
+        
+        <div class="spear-container">
+            <div class="spear">
+                <div class="glow-outer" id="glowOuter"></div>
+                <div class="glow-inner" id="glowInner"></div>
+                <div class="spear-head" id="spearHead">
+                    <div class="crystal-main"></div>
+                    <div class="crystal-inner"></div>
+                    <div class="crystal-highlight"></div>
+                    <div class="crystal-edge-left"></div>
+                    <div class="crystal-edge-right"></div>
+                </div>
+                <div class="particles" id="particles"></div>
+                <div class="staff">
+                    <div class="grip"></div>
+                </div>
+                <div class="runes" id="runes">ᚱ ᚢ ᚾ ᛖ</div>
+            </div>
+        </div>
+
+        <div class="type-selector">
+            <button class="type-btn fire" onclick="changeType('fire', '#ff4500', '🔥 Fire')">
+                <span>🔥 Fire</span>
+            </button>
+            <button class="type-btn cold" onclick="changeType('cold', '#00bfff', '❄️ Cold')">
+                <span>❄️ Cold</span>
+            </button>
+            <button class="type-btn lightning" onclick="changeType('lightning', '#ffd700', '⚡ Lightning')">
+                <span>⚡ Lightning</span>
+            </button>
+            <button class="type-btn thunder" onclick="changeType('thunder', '#4169e1', '💥 Thunder')">
+                <span>💥 Thunder</span>
+            </button>
+            <button class="type-btn acid" onclick="changeType('acid', '#32cd32', '🧪 Acid')">
+                <span>🧪 Acid</span>
+            </button>
+            <button class="type-btn poison" onclick="changeType('poison', '#9370db', '☠️ Poison')">
+                <span>☠️ Poison</span>
+            </button>
+            <button class="type-btn radiant active" onclick="changeType('radiant', '#fffacd', '✨ Radiant')">
+                <span>✨ Radiant</span>
+            </button>
+            <button class="type-btn necrotic" onclick="changeType('necrotic', '#708090', '💀 Necrotic')">
+                <span>💀 Necrotic</span>
+            </button>
+            <button class="type-btn force" onclick="changeType('force', '#da70d6', '🌟 Force')">
+                <span>🌟 Force</span>
+            </button>
+            <button class="type-btn psychic" onclick="changeType('psychic', '#ff1493', '🧠 Psychic')">
+                <span>🧠 Psychic</span>
+            </button>
+        </div>
+
+        <div class="damage-display" id="damageDisplay" style="border-color: #fffacd; color: #fffacd;">
+            ✨ RADIANT DAMAGE
+        </div>
+    </div>
+
+    <script>
+        let currentColor = '#fffacd';
+
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            particlesContainer.innerHTML = '';
+            
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.color = currentColor;
+                particle.style.animationDelay = `${Math.random() * 3}s`;
+                particle.style.animationDuration = `${2 + Math.random() * 2}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        function changeType(type, color, displayText) {
+            currentColor = color;
+            const spearHead = document.getElementById('spearHead');
+            const glowOuter = document.getElementById('glowOuter');
+            const glowInner = document.getElementById('glowInner');
+            const runes = document.getElementById('runes');
+            const damageDisplay = document.getElementById('damageDisplay');
+            const buttons = document.querySelectorAll('.type-btn');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.type-btn').classList.add('active');
+
+            spearHead.style.color = color;
+            glowOuter.style.color = color;
+            glowInner.style.color = color;
+            runes.style.color = color;
+            damageDisplay.style.borderColor = color;
+            damageDisplay.style.color = color;
+            damageDisplay.style.boxShadow = `0 0 30px ${color}`;
+            damageDisplay.textContent = displayText.toUpperCase() + ' DAMAGE';
+
+            createParticles();
+        }
+
+        // Initialize
+        changeType('radiant', '#fffacd', '✨ Radiant');
+    </script>
+</body>
+</html>
